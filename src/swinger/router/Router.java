@@ -32,7 +32,6 @@ public class Router{
     frame = new AppFrame();
     routes = new HashMap<>();
     support = new PropertyChangeSupport(this);
-    support.firePropertyChange(Events.CHANGED_PANEL.toString(), instance, currentPanel);
   }
   
   public static Router getInstance() {
