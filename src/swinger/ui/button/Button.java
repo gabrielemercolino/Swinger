@@ -10,11 +10,9 @@ import java.util.function.Consumer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import swinger.loader.Loader;
-
 public class Button extends JLabel {
-  private String text;
-  private ImageIcon normalBgImage;
+  String text;
+  ImageIcon normalBgImage;
 
   private Button() {
     super();
@@ -64,18 +62,6 @@ public class Button extends JLabel {
       if (button.normalBgImage != null) button.setIcon(button.normalBgImage);
       
       return button;
-    }
-
-    public static Consumer<Button> withText(String text){
-      return b->b.text = text;
-    }
-
-    public static Consumer<Button> withBgImage(String path){
-      return b->b.normalBgImage = Loader.loadImageIcon(path);
-    }
-
-    public static Consumer<Button> withHorizontalAligment(float aligment){
-      return b->b.setAlignmentX(aligment);
     }
   }
 }

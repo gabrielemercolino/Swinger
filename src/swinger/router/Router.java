@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
 
 import swinger.events.Events;
 import swinger.exceptions.RouteNotFoundException;
-import swinger.frame.AppFrame;
+import swinger.frame.DefaultFrame;
 
 /**
  * 
@@ -29,7 +29,7 @@ public class Router{
   private PropertyChangeSupport support;
 
   private Router(){
-    frame = new AppFrame();
+    frame = new DefaultFrame();
     routes = new HashMap<>();
     support = new PropertyChangeSupport(this);
     support.firePropertyChange(Events.CHANGED_PANEL.toString(), instance, currentPanel);
@@ -38,6 +38,10 @@ public class Router{
   public static Router getInstance() {
     if (instance == null) instance = new Router();
     return instance;
+  }
+
+  public void setFrame(JFrame frame) {
+    this.frame = frame;
   }
 
   public void register(String name, Supplier<JPanel> constructor) {

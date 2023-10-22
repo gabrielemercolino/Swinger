@@ -7,7 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import swinger.ui.button.Button.ButtonBuilder;
-import static swinger.ui.button.Button.ButtonBuilder.*;
+import static swinger.ui.button.Helpers.*;
 
 public class MenuPanel extends JPanel {
   @SuppressWarnings("unchecked")
@@ -17,9 +17,9 @@ public class MenuPanel extends JPanel {
     setBackground(Color.black);
     add(Box.createVerticalGlue());
     add(ButtonBuilder.create(
-      withText("Hello"),
-      withBgImage("example/button_atlas.png"),
-      withHorizontalAligment(CENTER_ALIGNMENT)
+      setText("Hello"),
+      setNormalBg("example/button_atlas.png"),
+      setHorizontalAligment(CENTER_ALIGNMENT)
       ));
     add(Box.createVerticalGlue());
   }
