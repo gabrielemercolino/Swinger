@@ -9,7 +9,6 @@ import java.awt.*;
 import static swinger.ui.button.Helpers.*;
 
 public class MenuPanel extends JPanel {
-	@SuppressWarnings("unchecked")
 	public MenuPanel() {
 		super();
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -18,7 +17,7 @@ public class MenuPanel extends JPanel {
 		add(ButtonBuilder.create(
 				setText("Hello form menu"),
 				setNormalBg("example/button_atlas.png"),
-				setHorizontalAligment(CENTER_ALIGNMENT),
+				setHorizontalAlignment(CENTER_ALIGNMENT),
 				setOnClick(e -> Router.getInstance().navigate("Another")),
 				setOnHover(e -> System.out.println("Hovering")),
 				setOnExit(e -> System.out.println("Exited"))

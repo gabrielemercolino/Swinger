@@ -4,8 +4,27 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 
+/**
+ * Handles the behaviour of the <code>Button</code>
+ *
+ * @see Button
+ */
 public class ButtonMouseHandler extends MouseAdapter {
-	private Consumer<MouseEvent> onClick, onHover, onExit;
+	/**
+	 * The action to do when the button is clicked
+	 */
+	private Consumer<MouseEvent> onClick;
+	/**
+	 * The action to do when the cursor enters the <code>Button</code> bounds
+	 */
+	private Consumer<MouseEvent> onHover;
+	/**
+	 * The action to do when the cursor exits the <code>Button</code> bounds
+	 */
+	private Consumer<MouseEvent> onExit;
+	/**
+	 * Used to determine if the cursor is inside the <code>Button</code> bounds
+	 */
 	private boolean inside;
 
 	public void mouseReleased(MouseEvent e) {

@@ -1,21 +1,24 @@
 package swinger.loader;
 
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 import java.io.InputStream;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
+/**
+ * Helper class for loading assets
+ */
 public class Loader {
-  private static ClassLoader classLoader = Loader.class.getClassLoader();
+	private static final ClassLoader classLoader = Loader.class.getClassLoader();
 
-  public static ImageIcon loadImageIcon(String path) {
-    Image img = null;
-    try (InputStream is = classLoader.getResourceAsStream(path)) {
-      img = ImageIO.read(is);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return new ImageIcon(img);
-  }
+	public static ImageIcon loadImageIcon(String path) {
+		Image img = null;
+		try (InputStream is = classLoader.getResourceAsStream(path)) {
+			img = ImageIO.read(is);
+		} catch (NullPointerException | IOException | IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		return new ImageIcon(img);
+	}
 }

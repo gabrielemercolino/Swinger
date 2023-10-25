@@ -1,6 +1,6 @@
 package swinger.router;
 
-import swinger.events.Events;
+import swinger.events.Event;
 import swinger.exceptions.RouteNotFoundException;
 import swinger.frame.DefaultFrame;
 
@@ -21,24 +21,51 @@ import java.util.function.Supplier;
  *   router.register("Menu", Menu::new);
  *   router.navigate("Menu");
  * </pre></code>
+ * <br/>
+ * Register a <code>PropertyChangeListener</code> to listen for events.
+ * <code><pre>
+ *   router.addListener(Events.CHANGED_PANEL, theListener);
+ * </pre></code>
  *
  * @author Gabriele Mercolino
  * @version 1.0
  */
 public class Router {
+	/**
+	 * Holds the only possible instance
+	 */
 	private static Router instance;
-
+	/**
+	 * The JFrame used
+	 */
 	private JFrame frame;
+	/**
+	 * Collects and pairs an identifier to the correspondent JPanel generator
+	 */
 	private final Map<String, Supplier<JPanel>> routes;
+	/**
+	 * References the current JPanel
+	 */
 	private JPanel currentPanel;
+	/**
+	 * Support for firing events
+	 */
 	private final PropertyChangeSupport support;
 
+	/**
+	 * Private constructor as for Singleton
+	 */
 	private Router() {
 		frame = new DefaultFrame();
 		routes = new HashMap<>();
 		support = new PropertyChangeSupport(this);
 	}
 
+	/**
+	 * Returns the only instance and creates it if not initialized
+	 *
+	 * @return instance
+	 */
 	public static Router getInstance() {
 		if (instance == null) instance = new Router();
 		return instance;
@@ -69,6 +96,14 @@ public class Router {
 		routes.put(name, constructor);
 	}
 
+	/**
+	 * Changes the page according to the identifier. <br/>
+	 * If the identifier is incorrect throws a <code>RouteNotFoundException</code>.
+	 * As a <code>RuntimeException</code> doesn't have to be used and will just happen nothing
+	 *
+	 * @param name The identifier
+	 * @throws RouteNotFoundException If identifier incorrect
+	 */
 	public void navigate(String name) throws RouteNotFoundException {
 		if (!routes.containsKey(name)) throw new RouteNotFoundException();
 
@@ -79,7 +114,7 @@ public class Router {
 
 		currentPanel = newPanel;
 
-		support.firePropertyChange(Events.CHANGED_PANEL.toString(), oldPanel, newPanel);
+		support.firePropertyChange(Event.CHANGED_PANEL.toString(), oldPanel, newPanel);
 	}
 
 	/**
@@ -89,7 +124,7 @@ public class Router {
 	 * @see Container
 	 * @see JFrame
 	 */
-	public void setContent(JFrame frame, Container page) {
+	private void setContent(JFrame frame, Container page) {
 		SwingUtilities.invokeLater(
 				() -> {
 					frame.getContentPane().removeAll();
@@ -100,15 +135,30 @@ public class Router {
 				});
 	}
 
+	/**
+	 * @return currentPanel
+	 */
 	public JPanel getCurrentPanel() {
 		return currentPanel;
 	}
 
-	public void addListener(String event, PropertyChangeListener listener) {
-		support.addPropertyChangeListener(event, listener);
+	/**
+	 * Add a <code>PropertyChangeListener</code> to listen for <code>Events</code>
+	 *
+	 * @param listener The <code>PropertyChangeListener</code>
+	 * @param events   The events that the listener should handle
+	 */
+	public void addListener(PropertyChangeListener listener, Event... events) {
+		for (Event event : events)
+			support.addPropertyChangeListener(event.toString(), listener);
 	}
 
-	public void removeListener(PropertyChangeListener l) {
-		support.removePropertyChangeListener(l);
+	/**
+	 * Removes the listener
+	 *
+	 * @param listener The <code>PropertyChangedListener</code>
+	 */
+	public void removeListener(PropertyChangeListener listener) {
+		support.removePropertyChangeListener(listener);
 	}
 }
