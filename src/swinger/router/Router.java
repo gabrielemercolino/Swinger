@@ -24,9 +24,9 @@ public class Router{
   private static Router instance;
 
   private JFrame frame;
-  private Map<String, Supplier<JPanel>> routes;
+  private final Map<String, Supplier<JPanel>> routes;
   private JPanel currentPanel;
-  private PropertyChangeSupport support;
+  private final PropertyChangeSupport support;
 
   private Router(){
     frame = new DefaultFrame();
@@ -65,7 +65,7 @@ public class Router{
    *
    * @see Container
    * @see JFrame
-   * @param page
+   * @param page the container to show
    */
   public void setContent(JFrame frame, Container page) {
     SwingUtilities.invokeLater(
