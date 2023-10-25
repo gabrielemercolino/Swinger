@@ -4,6 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
+/**
+ * Implementation of a button meant to substitute <code>JButton</code> <br/>
+ * To create a <code>Button</code> you need to use its builder <code>ButtonBuilder</code>:
+ * <code><pre>
+ *   Button b = Button.ButtonBuilder.create(...);
+ * </pre></code>
+ *
+ * @see ButtonBuilder
+ */
 public class Button extends JLabel {
 	String text;
 	ImageIcon normalBgImage;
@@ -21,6 +30,7 @@ public class Button extends JLabel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		// draw text on top
 		drawCenteredString(g2d, text, getVisibleRect(), g2d.getFont());
 	}
 
@@ -30,7 +40,7 @@ public class Button extends JLabel {
 	 * @param g    The Graphics instance.
 	 * @param text The String to draw.
 	 * @param rect The Rectangle to center the text in.
-	 * @author Not me
+	 * @author <a href="https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java">Daniel Kvist</a>
 	 */
 	public void drawCenteredString(Graphics g, String text, Rectangle rect, Font font) {
 		// Get the FontMetrics
@@ -48,8 +58,19 @@ public class Button extends JLabel {
 		g.drawString(text, x, y);
 	}
 
+	/**
+	 * The class meant to instantiate a <code>Button</code>
+	 *
+	 * @see Button
+	 */
 	public static class ButtonBuilder {
-		@SuppressWarnings("unchecked")
+		/**
+		 * The method takes an arbitrary number of <code>Consumer&lt;Button&gt;</code> to modify the look and behaviour of the <code>Button</code> which will be returned
+		 *
+		 * @param mods An arbitrary number of behaviours
+		 * @return button
+		 */
+		@SafeVarargs
 		public static Button create(Consumer<Button>... mods) {
 			Button button = new Button();
 			for (Consumer<Button> mod : mods) {
