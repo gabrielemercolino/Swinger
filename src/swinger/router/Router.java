@@ -1,92 +1,114 @@
 package swinger.router;
 
-import java.awt.Container;
+import swinger.events.Events;
+import swinger.exceptions.RouteNotFoundException;
+import swinger.frame.DefaultFrame;
+
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import swinger.events.Events;
-import swinger.exceptions.RouteNotFoundException;
-import swinger.frame.DefaultFrame;
-
 /**
- * 
+ * Handles the navigation between pages
+ * <br/>
+ * To be used you can get a reference by calling the <code>getInstance</code> method:
+ * <code><pre>
+ *   Router router = Router.getInstance();
+ *   router.register("Menu", Menu::new);
+ *   router.navigate("Menu");
+ * </pre></code>
+ *
  * @author Gabriele Mercolino
  * @version 1.0
  */
-public class Router{
-  private static Router instance;
+public class Router {
+	private static Router instance;
 
-  private JFrame frame;
-  private final Map<String, Supplier<JPanel>> routes;
-  private JPanel currentPanel;
-  private final PropertyChangeSupport support;
+	private JFrame frame;
+	private final Map<String, Supplier<JPanel>> routes;
+	private JPanel currentPanel;
+	private final PropertyChangeSupport support;
 
-  private Router(){
-    frame = new DefaultFrame();
-    routes = new HashMap<>();
-    support = new PropertyChangeSupport(this);
-  }
-  
-  public static Router getInstance() {
-    if (instance == null) instance = new Router();
-    return instance;
-  }
+	private Router() {
+		frame = new DefaultFrame();
+		routes = new HashMap<>();
+		support = new PropertyChangeSupport(this);
+	}
 
-  public void setFrame(JFrame frame) {
-    this.frame = frame;
-  }
+	public static Router getInstance() {
+		if (instance == null) instance = new Router();
+		return instance;
+	}
 
-  public void register(String name, Supplier<JPanel> constructor) {
-    routes.put(name, constructor);
-  }
+	/**
+	 * Change the default <code>JFrame</code> with a custom one
+	 *
+	 * @param frame The new JFrame
+	 */
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
+	}
 
-  public void navigate(String name) throws RouteNotFoundException {
-    if (!routes.containsKey(name)) throw new RouteNotFoundException();
+	/**
+	 * Registers a new page with the identifier.
+	 * <br/>
+	 * For example, assuming <code>Page</code> a class that extends <code>JPanel</code>:
+	 * <pre>
+	 *   router.register("Page", Page::new);
+	 * </pre>
+	 *
+	 * @param name        The identifier of the page
+	 * @param constructor The constructor that will be called when needed
+	 * @see JPanel
+	 */
+	public void register(String name, Supplier<JPanel> constructor) {
+		routes.put(name, constructor);
+	}
 
-    JPanel newPanel = routes.get(name).get();
-    JPanel oldPanel = currentPanel;
+	public void navigate(String name) throws RouteNotFoundException {
+		if (!routes.containsKey(name)) throw new RouteNotFoundException();
 
-    setContent(frame, newPanel);
+		JPanel newPanel = routes.get(name).get();
+		JPanel oldPanel = currentPanel;
 
-    currentPanel = newPanel;
+		setContent(frame, newPanel);
 
-    support.firePropertyChange(Events.CHANGED_PANEL.toString(), oldPanel, newPanel);
-  }
+		currentPanel = newPanel;
 
-  /**
-   * Sets the content of the Frame
-   *
-   * @see Container
-   * @see JFrame
-   * @param page the container to show
-   */
-  public void setContent(JFrame frame, Container page) {
-    SwingUtilities.invokeLater(
-        () -> {
-          frame.getContentPane().removeAll();
-          frame.setContentPane(page);
-          frame.revalidate();
-          frame.setVisible(true);
-          frame.getContentPane().requestFocusInWindow();
-        });
-  }
+		support.firePropertyChange(Events.CHANGED_PANEL.toString(), oldPanel, newPanel);
+	}
 
-  public JPanel getCurrentPanel() {
-    return currentPanel;
-  }
+	/**
+	 * Sets the content of the Frame
+	 *
+	 * @param page the container to show
+	 * @see Container
+	 * @see JFrame
+	 */
+	public void setContent(JFrame frame, Container page) {
+		SwingUtilities.invokeLater(
+				() -> {
+					frame.getContentPane().removeAll();
+					frame.setContentPane(page);
+					frame.revalidate();
+					frame.setVisible(true);
+					frame.getContentPane().requestFocusInWindow();
+				});
+	}
 
-  public void addListener(String event, PropertyChangeListener listener) {
-    support.addPropertyChangeListener(event, listener);
-  }
+	public JPanel getCurrentPanel() {
+		return currentPanel;
+	}
 
-  public void removeListener(PropertyChangeListener l) {
-    support.removePropertyChangeListener(l);
-  }
+	public void addListener(String event, PropertyChangeListener listener) {
+		support.addPropertyChangeListener(event, listener);
+	}
+
+	public void removeListener(PropertyChangeListener l) {
+		support.removePropertyChangeListener(l);
+	}
 }
