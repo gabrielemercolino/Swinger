@@ -24,7 +24,7 @@ import java.util.function.Supplier;
  * <br/>
  * Register a <code>PropertyChangeListener</code> to listen for events.
  * <code><pre>
- *   router.addListener(Events.CHANGED_PANEL, theListener);
+ *   router.addListener(theListener, Event.THE_EVENT);
  * </pre></code>
  *
  * @author Gabriele Mercolino
